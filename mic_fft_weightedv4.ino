@@ -67,16 +67,16 @@ const uint8_t PROGMEM
   // are scaling weights as each input bin is merged into output.  The
   // merging also "de-linearizes" the FFT output, so it's closer to a
   // logarithmic scale with octaves evenly-ish spaced, music looks better.
-  bin0data[] = { 1, 2, 147 },
-  bin1data[] = { 2, 2, 89, 14 },
+  bin8data[] = { 1, 2, 147 },
+  bin9data[] = { 2, 2, 89, 14 },
   bin2data[] = { 2, 3, 89, 14 },
   bin3data[] = { 4, 3, 15, 181, 58, 3 },
   bin4data[] = { 4, 4, 15, 181, 58, 3 },
   bin5data[] = { 6, 5, 6, 89, 185, 85, 14, 2 },
   bin6data[] = { 7, 7, 5, 60, 173, 147, 49, 9, 1 },
   bin7data[] = { 10, 8, 3, 23, 89, 170, 176, 109, 45, 14, 4, 1 },
-  bin8data[] = { 13, 11, 2, 12, 45, 106, 167, 184, 147, 89, 43, 18, 6, 2, 1 },
-  bin9data[] = { 18, 14, 2, 6, 19, 46, 89, 138, 175, 185, 165, 127, 85, 51, 27, 14, 7, 3, 2, 1 },
+  bin0data[] = { 13, 11, 2, 12, 45, 106, 167, 184, 147, 89, 43, 18, 6, 2, 1 },
+  bin1data[] = { 18, 14, 2, 6, 19, 46, 89, 138, 175, 185, 165, 127, 85, 51, 27, 14, 7, 3, 2, 1 },
   // Pointers to 10 bin arrays, because PROGMEM arrays-of-arrays are weird:
   * const binData[] = { bin0data, bin1data, bin2data, bin3data, bin4data,
                         bin5data, bin6data, bin7data, bin8data, bin9data },
@@ -121,7 +121,7 @@ const uint16_t PROGMEM
   binDiv[]   = { 147, 103, 103, 257, 257, 381, 444, 634, 822, 1142 };
 
 // makes code use pixel strip (num of pixels, pin number, other variable dont touch)
-  Adafruit_NeoPixel pixels = Adafruit_NeoPixel( 10, 6, NEO_GRB + NEO_KHZ800);
+  Adafruit_NeoPixel pixels = Adafruit_NeoPixel( 12, 6, NEO_GRB + NEO_KHZ800);
 
 // SETUP FUNCTION - runs once ----------------------------------------------
 
@@ -221,6 +221,11 @@ void loop() {
         pgm_read_byte(&gamma8[r]),
         pgm_read_byte(&gamma8[g]),
         pgm_read_byte(&gamma8[b]));
+
+      pixels.setPixelColor(i+10,
+        pgm_read_byte(&gamma8[r]),
+        pgm_read_byte(&gamma8[g]),
+        pgm_read_byte(&gamma8[b]));
       }
       else{
         avgLvl[i] = (avgLvl[i] * 20 + level)/ (21); //weighted lvl average fall
@@ -232,6 +237,12 @@ void loop() {
         pgm_read_byte(&gamma8[r]),
         pgm_read_byte(&gamma8[g]),
         pgm_read_byte(&gamma8[b]));
+
+       pixels.setPixelColor(i+10,
+        pgm_read_byte(&gamma8[r]),
+        pgm_read_byte(&gamma8[g]),
+        pgm_read_byte(&gamma8[b]));
+       
       }
       
     } else { // level = 256, show full pixel OONTZ OONTZ
@@ -240,6 +251,10 @@ void loop() {
               g = (pgm_read_byte(&greens[i]) * 255) >> 8,
               b = (pgm_read_byte(&blues[i])  * 255) >> 8;
       pixels.setPixelColor(i,
+        pgm_read_byte(&gamma8[r]),
+        pgm_read_byte(&gamma8[g]),
+        pgm_read_byte(&gamma8[b]));
+      pixels.setPixelColor(i+10,
         pgm_read_byte(&gamma8[r]),
         pgm_read_byte(&gamma8[g]),
         pgm_read_byte(&gamma8[b]));
