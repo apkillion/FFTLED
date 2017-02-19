@@ -81,9 +81,9 @@ const uint8_t PROGMEM
   * const binData[] = { bin0data, bin1data, bin2data, bin3data, bin4data,
                         bin5data, bin6data, bin7data, bin8data, bin9data },
   // R,G,B values for color wheel covering 10 NeoPixels:
-  reds[]   = { 191, 165, 23, 250, 198, 179, 178, 255, 107, 163 },
-  greens[] = { 185, 31, 107, 191, 112, 207, 232, 255, 40, 173 },
-  blues[]  = { 190, 31, 4, 255, 37, 242, 167, 255, 4, 184 },
+  reds[]   = { 73, 129, 169, 97, 133, 185, 143, 213, 219, 189 },
+  greens[] = { 56, 108, 161, 51, 97, 156, 59, 117, 202, 208 },
+  blues[]  = { 41, 91, 140, 24, 35, 107, 27, 0, 105, 156 },
   gamma8[] = { // Gamma correction improves the appearance of midrange colors
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -211,7 +211,8 @@ void loop() {
                  256L * (sum - avgLo[i]) / (long)(avgHi[i] - avgLo[i]));
     // Clip output and convert to color:
     if(level <= 255) {
-      avgLvl[i] = (avgLvl[i] * 10 + level)/ (11); //weighted lvl average
+      if(level >= avgLvl[i]){
+      avgLvl[i] = (avgLvl[i] * 5 + level)/ (6); //weighted lvl average rise
       level = avgLvl[i];
       uint8_t r = (pgm_read_byte(&reds[i])   * level) >> 8,
               g = (pgm_read_byte(&greens[i]) * level) >> 8,
@@ -220,8 +221,21 @@ void loop() {
         pgm_read_byte(&gamma8[r]),
         pgm_read_byte(&gamma8[g]),
         pgm_read_byte(&gamma8[b]));
+      }
+      else{
+        avgLvl[i] = (avgLvl[i] * 20 + level)/ (21); //weighted lvl average fall
+      level = avgLvl[i];
+      uint8_t r = (pgm_read_byte(&reds[i])   * level) >> 8,
+              g = (pgm_read_byte(&greens[i]) * level) >> 8,
+              b = (pgm_read_byte(&blues[i])  * level) >> 8;
+      pixels.setPixelColor(i,
+        pgm_read_byte(&gamma8[r]),
+        pgm_read_byte(&gamma8[g]),
+        pgm_read_byte(&gamma8[b]));
+      }
+      
     } else { // level = 256, show full pixel OONTZ OONTZ
-      avgLvl[i] = (avgLvl[i] * 10 + level)/ (11); //weighted lvl average 
+      avgLvl[i] = (avgLvl[i] * 5 + level)/ (6); //weighted lvl average 
        uint8_t r = (pgm_read_byte(&reds[i])   * 255) >> 8,
               g = (pgm_read_byte(&greens[i]) * 255) >> 8,
               b = (pgm_read_byte(&blues[i])  * 255) >> 8;
