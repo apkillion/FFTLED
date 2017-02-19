@@ -134,7 +134,8 @@ int avg_offset = 0;
 /*
  * Stores how much movement is required to switch motion.
  */
-#define offset  0.5
+#define offset  0.2
+
 
 
 #define brightness_white 255 
@@ -199,9 +200,6 @@ void loop() {
     pixels.show();
     delayMicroseconds(delay_white);
   }
-    x_prev = x;
-    y_prev = y;
-    z_prev = z;
   }
  
   else{ // Audio
@@ -322,10 +320,13 @@ void loop() {
   pixels.show();
   delay(30);
   Serial.flush();
-    x_prev = x;
-    y_prev = y;
-    z_prev = z;
 
   if(++frameIdx >= FRAMES) frameIdx = 0;
   }
+
+    delay(5);
+    x_prev = x;
+    y_prev = y;
+    z_prev = z;
+  
 }
